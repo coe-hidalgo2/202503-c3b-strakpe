@@ -45,3 +45,10 @@ jobs:
             module load Boost/1.83.0-GCC-13.2.0 Ninja/1.12.1-GCCcore-13.3.0 OpenMPI/4.1.6-GCC-13.2.0
           fi
           cmake --build --preset default -t package
+      
+      - name: Upload tarball                  (1)
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-${{ matrix.runs-on }}
+          path: |
+            build/default/*.tar.gz

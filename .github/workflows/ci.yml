@@ -25,3 +25,7 @@ jobs:
       - name: Run Tests
         run: |
           ctest --preset default
+          
+      - name: Package the Application
+        run: |
+          cmake --build --preset default -t package

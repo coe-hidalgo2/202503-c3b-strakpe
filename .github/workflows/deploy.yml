@@ -32,7 +32,7 @@ jobs:
       - name: PULL Apptainer SIF
         run: |
           # Pull the SIF file from GHCR
-          $APPTAINER_CMD pull -F $SIF_FILENAME oras://ghcr.io/${{ github.repository }}:solution-sif
+          $APPTAINER_CMD pull -F $SIF_FILENAME oras://ghcr.io/${{ github.repository }}:2.0-sif
           # inspect the SIF file
           $APPTAINER_CMD inspect $SIF_FILENAME
 

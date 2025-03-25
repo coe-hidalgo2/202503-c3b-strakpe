@@ -1,5 +1,4 @@
 name: CI - Configure, Build, Test
-
 on:
   push:
     branches: [ main ]
@@ -7,7 +6,6 @@ on:
       - 'v*'
   pull_request:
     branches: [ main ]
-
   workflow_dispatch:
 
 jobs:
@@ -127,3 +125,5 @@ jobs:
           # Push the SIF file to the GitHub Container Registry.
           sif=$( basename ${{ github.repository }}.sif )
           ${{ env.apptainer }} push $sif oras://ghcr.io/${{ github.repository }}:2.0-sif
+
+          

@@ -62,6 +62,7 @@ jobs:
 
   build-docker:
     needs: build
+    if: "!contains(github.event.head_commit.message, 'skip docker')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -101,6 +102,7 @@ jobs:
 
   build-apptainer:
     runs-on: self-apptainer
+    if: "!contains(github.event.head_commit.message, 'skip apptainer')"
 #    needs: build-docker
     env:
       apptainer: /opt/apptainer/v1.4.0/apptainer/bin/apptainer
@@ -125,5 +127,3 @@ jobs:
           # Push the SIF file to the GitHub Container Registry.
           sif=$( basename ${{ github.repository }}.sif )
           ${{ env.apptainer }} push $sif oras://ghcr.io/${{ github.repository }}:2.0-sif
-
-          

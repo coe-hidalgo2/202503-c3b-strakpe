@@ -4,9 +4,10 @@ on:
   push:
     branches: [ main ]
     tags:
-      - 'v*' 
+      - 'v*'
   pull_request:
-    branches: [ main ]   
+    branches: [ main ]
+
   workflow_dispatch:
 
 jobs:
@@ -14,7 +15,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [self-ubuntu-24.04, karolina]
-
+    if: "!contains(github.event.head_commit.message, 'skip build')"
     runs-on: ${{ matrix.runs-on }}
     steps:
       - name: Checkout Repository
@@ -97,3 +98,30 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  build-apptainer:
+    runs-on: self-apptainer
+#    needs: build-docker
+    env:
+      apptainer: /opt/apptainer/v1.4.0/apptainer/bin/apptainer
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      -
+        name: Login to GitHub Container Registry
+        run: |
+          ${{ env.apptainer }} remote login  -u ${{ github.repository_owner }} -p ${{ secrets.GHCR_PAT }} oras://ghcr.io
+
+      - name: Convert Docker Image to Apptainer SIF
+        run: |
+          # Pull the Docker image and convert it to a Singularity Image Format (SIF) file.
+          sif=$( basename ${{ github.repository }}.sif )
+          ${{ env.apptainer }} pull -F $sif docker://ghcr.io/${{ github.repository }}:2.0
+          ${{ env.apptainer }} inspect $sif
+
+      - name: Upload Apptainer SIF to GitHub Container Registry
+        run: |
+          # Push the SIF file to the GitHub Container Registry.
+          sif=$( basename ${{ github.repository }}.sif )
+          ${{ env.apptainer }} push $sif oras://ghcr.io/${{ github.repository }}:2.0-sif

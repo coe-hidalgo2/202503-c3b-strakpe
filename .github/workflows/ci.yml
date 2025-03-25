@@ -1,5 +1,4 @@
 name: CI - Configure, Build, Test
-
 on:
   push:
     branches: [ main ]

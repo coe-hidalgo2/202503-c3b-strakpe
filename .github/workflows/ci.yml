@@ -125,3 +125,5 @@ jobs:
           # Push the SIF file to the GitHub Container Registry.
           sif=$( basename ${{ github.repository }}.sif )
           ${{ env.apptainer }} push $sif oras://ghcr.io/${{ github.repository }}:2.0-sif
+
+          
